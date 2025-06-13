@@ -36,6 +36,7 @@ export default function Page() {
         setRightWidth(newRightWidth);
     }
 
+    
     function mouseUp() {
         setIsDragging(false);
         document.removeEventListener("mousemove", mouseMove);
@@ -43,16 +44,22 @@ export default function Page() {
     }
 
     return (
-    <main ref={containerRef} className="flex w-screen h-screen border-4 border-e-accent">
-        <div style={ {width : leftWidth + "px" }} className="bg-background h-full w-50">
+        <main ref={containerRef} className="flex w-screen h-screen border-4 border-e-accent">
+            <div id="leftPane" style={ {width : leftWidth + "px" }} className="bg-background h-full w-50">
 
-        </div>
+            </div>
 
-        <div onMouseDown={mouseDown} className="h-full w-2 bg-amber-700 cursor-ew-resize"></div>
+            <div id="resizeableBar" onMouseDown={mouseDown} className="h-full w-2 bg-amber-700 cursor-ew-resize"></div>
 
-        <div style={ {width : rightWidth + "px" }} className="bg-accent h-full flex-1">
+            <div id="rightPane" style={ {width : rightWidth + "px" }} className="bg-accent h-full flex-1 max-h-screen">
 
-        </div>
-    </main>
+                <textarea className="h-1/4 w-full bg-amber-500" placeholder="Explain your understanding of the problem..."></textarea>
+
+                <div id="IDE" className="h-1/2 w-full bg-amber-900"></div>
+
+                <textarea className="h-1/4 w-full bg-amber-500" placeholder="Explain your solution code for the problem..."></textarea>
+
+            </div>
+        </main>
 )
 }
