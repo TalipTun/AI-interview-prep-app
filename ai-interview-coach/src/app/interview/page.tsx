@@ -1,5 +1,10 @@
 'use client';
 import { useRef, useEffect, useState } from "react"
+import dynamic from "next/dynamic";
+
+const MonacoEdtior = dynamic( () => import("../components/MonacoEditor"), {
+    ssr: false,
+} )
 
 export default function Page() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,21 +49,50 @@ export default function Page() {
     }
 
     return (
-        <main ref={containerRef} className="flex w-screen h-screen border-4 border-e-accent">
-            <div id="leftPane" style={ {width : leftWidth + "px" }} className="bg-background h-full w-50">
+        <main ref={containerRef} className="flex w-screen h-screen border-4 m-0 p-0 bg-black">
 
+            <div 
+                id="leftPane" 
+                style={ {width : leftWidth + "px" }} 
+                className="bg-background h-screen w-50">
             </div>
 
-            <div id="resizeableBar" onMouseDown={mouseDown} className="h-full w-2 bg-amber-700 cursor-ew-resize"></div>
+            <div 
+                id="resizeableBar" 
+                onMouseDown={mouseDown} 
+                className="h-screen w-2 bg-black cursor-ew-resize">
+            </div>
 
-            <div id="rightPane" style={ {width : rightWidth + "px" }} className="bg-accent h-full flex-1 max-h-screen">
+            <div 
+                id="rightPane" 
+                style={ {width : rightWidth + "px" }} 
+                className="h-screen flex-1 max-h-screen p-0">
 
-                <textarea className="h-1/4 w-full bg-amber-500" placeholder="Explain your understanding of the problem..."></textarea>
+                <textarea 
+                    style={{height: 24 + "vh"}} 
+                    className=" w-full bg-background resize-none m-0 p-0" 
+                    placeholder="Explain your understanding of the problem...">
+                </textarea>
 
-                <div id="IDE" className="h-1/2 w-full bg-amber-900"></div>
+                <div 
+                    className="w-full h-0.5 bg-black">
+                </div>
 
-                <textarea className="h-1/4 w-full bg-amber-500" placeholder="Explain your solution code for the problem..."></textarea>
+                <div 
+                    id="IDE" 
+                    className="h-2/4 w-full bg-background m-0 p-0">
+                        <MonacoEdtior language="python"/>
+                </div>
 
+                <div 
+                    className="w-full h-2 bg-black">
+                </div>
+
+                <textarea 
+                    style={{height: 24 + "vh"}} 
+                    className=" w-full bg-background resize-none" 
+                    placeholder="Explain your solution code for the problem...">                   
+                </textarea>
             </div>
         </main>
 )
