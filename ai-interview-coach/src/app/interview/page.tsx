@@ -72,6 +72,8 @@ export default function Page() {
                     style={{height: 24 + "vh"}} 
                     className=" w-full bg-background resize-none m-0 p-0" 
                     placeholder="Explain your understanding of the problem...">
+
+                <button className="w-10 h-10"> Run Code </button>
                 </textarea>
 
                 <div 
@@ -80,9 +82,10 @@ export default function Page() {
 
                 <div 
                     id="IDE" 
-                    className="h-2/4 w-full bg-background m-0 p-0">
+                    className="h-2/4 w-full bg-background m-0 p-0 ">
                         <MonacoEdtior language="python"/>
                 </div>
+
 
                 <div 
                     className="w-full h-2 bg-black">

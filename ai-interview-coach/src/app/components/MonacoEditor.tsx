@@ -1,16 +1,23 @@
 'use client'
 
 import Editor from "@monaco-editor/react";
+import { useState, useRef } from "react";
 
 type MonacoEdtiorProps = {
     language?: string;
-    handleChange?: (value: string | undefined) => void;
 };
 
 export default function MonacoEdtior( {
     language = "python",
-    handleChange
 }: MonacoEdtiorProps) {
+
+    const [code, setCode] = useState("");
+
+    function handleChange(val: string | undefined) {
+        const newCode = val;
+        setCode(val ?? "");
+    }
+
     return (
         <Editor
             defaultValue=""
