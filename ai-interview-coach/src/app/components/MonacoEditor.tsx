@@ -5,10 +5,14 @@ import { useState, useRef } from "react";
 
 type MonacoEdtiorProps = {
     language?: string;
+    options?: {
+        backgroundColor?: string;
+    };
 };
 
 export default function MonacoEdtior( {
     language = "python",
+    options = { backgroundColor: "#262626" },
 }: MonacoEdtiorProps) {
 
     const [code, setCode] = useState("");
@@ -19,12 +23,28 @@ export default function MonacoEdtior( {
     }
 
     return (
+
         <Editor
-            defaultValue=""
+            className="py-6 bg-background"
+            value={code}
             language={language}
-            theme="vs-dark"
-            options={{ fontSize: 14, minimap: { enabled: false }, lineNumbers: 'on' }}
+            theme="my-dark"
+            options={{ 
+                fontSize: 14, 
+                minimap: { enabled: false }, 
+                lineNumbers: 'on', 
+            }}
+            onMount={(editor, monaco) => {
+                monaco.editor.defineTheme("my-dark", {
+                    base: "vs-dark",
+                    inherit: true,
+                    rules: [],
+                    colors: { 'editor.background': options.backgroundColor || '#262626' },
+                })
+                monaco.editor.setTheme("my-dark")
+            }}
             onChange={handleChange}
         />
+
     )
 }

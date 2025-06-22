@@ -6,3 +6,7 @@
   --color-secondary: #A0A0A0;
   --color-accent: #22C55E;
 }
+
+html, body {
+    overflow: hidden;
+}

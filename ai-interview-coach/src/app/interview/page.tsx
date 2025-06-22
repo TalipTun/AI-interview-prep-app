@@ -1,4 +1,5 @@
 'use client';
+
 import { useRef, useEffect, useState } from "react"
 import dynamic from "next/dynamic";
 
@@ -53,8 +54,8 @@ export default function Page() {
 
             <div 
                 id="leftPane" 
-                style={ {width : leftWidth + "px" }} 
-                className="bg-background h-screen w-50">
+                style={ {width : leftWidth - 4 + "px" }} 
+                className="bg-background h-screen">
             </div>
 
             <div 
@@ -65,16 +66,14 @@ export default function Page() {
 
             <div 
                 id="rightPane" 
-                style={ {width : rightWidth + "px" }} 
+                style={ {width : rightWidth - 4 + "px" }} 
                 className="h-screen flex-1 max-h-screen p-0">
 
-                <textarea 
-                    style={{height: 24 + "vh"}} 
-                    className=" w-full bg-background resize-none m-0 p-0" 
-                    placeholder="Explain your understanding of the problem...">
-
-                <button className="w-10 h-10"> Run Code </button>
-                </textarea>
+                <div
+                    id="input1"
+                    className="w-full bg-background resize-none m-0 p-0 h-24/100 flex flex-row justify-center items-center">
+                        <button className="w-24 h-8 bg-accent"> Record </button>
+                </div>
 
                 <div 
                     className="w-full h-0.5 bg-black">
@@ -82,10 +81,9 @@ export default function Page() {
 
                 <div 
                     id="IDE" 
-                    className="h-2/4 w-full bg-background m-0 p-0 ">
+                    className="h-2/4 w-full m-0 p-0 relative">
                         <MonacoEdtior language="python"/>
                 </div>
-
 
                 <div 
                     className="w-full h-2 bg-black">
