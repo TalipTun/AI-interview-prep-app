@@ -11,7 +11,7 @@ export default function Page() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [leftWidth, setLeftWidth] = useState(0);
     const [rightWidth, setRightWidth] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
+    const [isDragging, setIsDragging] = useState(false); 
 
     //this code makes two sides split equally in the beginning, on mount.
     useEffect(() => {
@@ -20,6 +20,8 @@ export default function Page() {
             setLeftWidth(totalWidth / 2);
             setRightWidth(totalWidth / 2);
         }
+        const record = document.querySelector(".record");
+        const stop = document.querySelector(".stop");
     }, [])
 
     function mouseDown() {
@@ -49,6 +51,19 @@ export default function Page() {
         document.removeEventListener("mouseup", mouseUp);
     }
 
+    const constraints = {
+        audio: true,
+        video: false,
+    }
+
+    if (navigator.mediaDevices) {
+        navigator.mediaDevices
+            .getUserMedia(constraints)
+            .then((stream) => {
+                const mediaRecorder = new MediaRecorder(stream);
+            })
+    }
+
     return (
         <main ref={containerRef} className="flex w-screen h-screen border-4 m-0 p-0 bg-black">
 
@@ -72,7 +87,8 @@ export default function Page() {
                 <div
                     id="input1"
                     className="w-full bg-background resize-none m-0 p-0 h-24/100 flex flex-row justify-center items-center">
-                        <button className="w-24 h-8 bg-accent"> Record </button>
+                        <button id="record" className="w-24 h-8 bg-accent"> Record </button>
+                        <button id="record" className="w-24 h-8 bg-red-700"> Stop </button>
                 </div>
 
                 <div 
@@ -96,5 +112,5 @@ export default function Page() {
                 </textarea>
             </div>
         </main>
-)
+    )
 }
