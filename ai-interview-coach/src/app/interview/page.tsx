@@ -60,10 +60,28 @@ export default function Page() {
         video: false,
     }
 
+    const submitData = async (data: FormData) => {
+        try {
+            let response = await fetch("/api/transcribe",  {
+                method: "POST",
+                body: data
+            })
+
+            if (response.ok) {
+                console.log("Upload successful:", await response.json());
+            } else {
+                console.error("Upload failed:", response.statusText);
+            }
+        } catch (err) {
+            console.log("an error occured:", err);
+        }
+    }
+
     // Define chunks outside so it's accessible
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunks = useRef<BlobPart[]>([]);
     const [audioURL, setAudioURL] = useState<string | null>(null);
+    const data = new FormData();
 
     const handleRecord = () => {
         if (!recording) {
@@ -84,6 +102,11 @@ export default function Page() {
                             chunks.current = [];
                             const audioURL = URL.createObjectURL(blob);
                             setAudioURL(audioURL);
+
+                            // working on today
+                            const data = new FormData();
+                            data.append("audioFile", blob, "recording.ogg");
+                            submitData(data);
 
                             console.log("recorder stopped");
                             setRecording(false);
