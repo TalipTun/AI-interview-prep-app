@@ -1,16 +1,27 @@
 import { NextResponse } from "next/server";
+import OpenAI  from "openai";
+import fs from "fs";
 
 export async function POST(req: Request) {
     try {
         const formData = await req.formData();
         const file = formData.get("audioFile");
 
-        if (!file) {
-            return NextResponse.json( { error: "No file uploaded"}, {status: 400})
+        if (!file || !(file instanceof Blob)) {
+            return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
         }
 
         console.log("received file:", file);
-        return NextResponse.json({ message: "File received successfully" });
+
+            const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });        
+            const transcription = await openai.audio.transcriptions.create({
+                file: file,
+                model: "gpt-4o-transcribe",
+                response_format: "text",
+            });
+
+        console.log(transcription);
+        return NextResponse.json({ transcription });
         
     } catch (err) {
         console.log("an error occured", err);
