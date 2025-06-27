@@ -97,14 +97,14 @@ export default function Page() {
                         };
 
                         mediaRecorder.onstop = () => {
-                            const blob = new Blob(chunks.current, { type: "audio/ogg; codecs=opus" });
+                            const blob = new Blob(chunks.current, { type: "audio/webm" });
                             chunks.current = [];
                             const audioURL = URL.createObjectURL(blob);
                             setAudioURL(audioURL);
 
                             // working on today
                             const data = new FormData();
-                            data.append("audioFile", blob, "recording.ogg");
+                            data.append("audioFile", blob, "recording.webm");
                             submitData(data);
 
                             console.log("recorder stopped");
