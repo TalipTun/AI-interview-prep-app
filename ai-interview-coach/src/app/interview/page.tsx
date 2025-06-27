@@ -1,6 +1,7 @@
 'use client';
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState, use } from "react"
 import dynamic from "next/dynamic";
+import microphone_icon from "../assets/microphone.png"
 
 const MonacoEdtior = dynamic( () => import("../components/MonacoEditor"), {
     ssr: false,
@@ -11,9 +12,9 @@ export default function Page() {
     const [leftWidth, setLeftWidth] = useState(0);
     const [rightWidth, setRightWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false); 
-    const recordBtn = useRef<HTMLButtonElement>(null);
     const stopBtn = useRef<HTMLButtonElement>(null);
     const [recording, setRecording] = useState(false);
+    const input1_container = useRef<HTMLTextAreaElement>(null);
 
     //this code makes two sides split equally in the beginning, on mount.
     useEffect(() => {
@@ -67,7 +68,16 @@ export default function Page() {
             })
 
             if (response.ok) {
-                console.log("Upload successful:", await response.json());
+                // this is where we have the text
+                const text = await response.json();
+                
+                let transcription = text.transcription;
+                if (typeof transcription === "string" && transcription.startsWith("{")) {
+                    transcription = JSON.parse(transcription).transcription;
+                }
+                if (input1_container.current) {
+                    input1_container.current.value = transcription;
+                }
             } else {
                 console.error("Upload failed:", response.statusText);
             }
@@ -102,7 +112,6 @@ export default function Page() {
                             const audioURL = URL.createObjectURL(blob);
                             setAudioURL(audioURL);
 
-                            // working on today
                             const data = new FormData();
                             data.append("audioFile", blob, "recording.webm");
                             submitData(data);
@@ -145,11 +154,26 @@ export default function Page() {
                 style={ {width : rightWidth - 4 + "px" }} 
                 className="h-screen flex-1 max-h-screen p-0">
 
-                <div
-                    id="input1"
-                    className="w-full bg-background resize-none m-0 p-0 h-24/100 flex flex-row justify-center items-center">
-                        <button id="record" className="w-24 h-8 bg-accent" ref={recordBtn} onClick={handleRecord}> Record </button>
-                        {audioURL && (<audio controls src={audioURL} className="mt-4" />)}
+                <div className="relative w-full h-24/100 bg-background">
+                    <textarea
+                        id="input1"
+                        className="w-full resize-none m-0 p-0 h-full"
+                        ref={input1_container}
+                        style={{ minHeight: "100px" }}
+                    />
+                    <button
+                        id="record"
+                        className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 transition-colors duration-300 ${
+                            recording
+                                ? 'bg-green-500 text-white'
+                                : 'bg-gray-700 text-gray-300 hover:bg-green-500 hover:text-white'
+                        }`}
+                        onClick={handleRecord}
+                        type="button"
+                    >
+                        <img src={microphone_icon.src} className="w-8 h-8" style={{ filter: "invert(1)" }} alt="mic" />
+                    </button>
+                    {audioURL && (<audio controls src={audioURL} className="mt-4" />)}
                 </div>
 
                 <div 
@@ -159,7 +183,7 @@ export default function Page() {
                 <div 
                     id="IDE" 
                     className="h-2/4 w-full m-0 p-0 relative">
-                        <MonacoEdtior language="python"/>
+                     <MonacoEdtior language="python"/> 
                 </div>
 
                 <div 
