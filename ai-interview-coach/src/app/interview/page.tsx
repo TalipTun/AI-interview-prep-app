@@ -85,11 +85,7 @@ export default function Page() {
                     className="w-full h-2 bg-black">
                 </div>
 
-                <textarea 
-                    style={{height: 24 + "vh"}} 
-                    className=" w-full bg-background resize-none" 
-                    placeholder="Explain your solution code for the problem...">                   
-                </textarea>
+                <InputField />
             </div>
         </main>
     )
