@@ -2,6 +2,8 @@
 import { useRef, useEffect, useState, use } from "react"
 import dynamic from "next/dynamic";
 import microphone_icon from "../assets/microphone.png"
+import microphone_small_icon from "../assets/microphone_small.png"
+import keyboard_icon from "../assets/keyboard.png"
 
 const MonacoEdtior = dynamic( () => import("../components/MonacoEditor"), {
     ssr: false,
@@ -15,6 +17,8 @@ export default function Page() {
     const stopBtn = useRef<HTMLButtonElement>(null);
     const [recording, setRecording] = useState(false);
     const input1_container = useRef<HTMLTextAreaElement>(null);
+    const switchButton = useRef<HTMLButtonElement>(null);
+    const icon = useRef<HTMLImageElement>(null);
 
     //this code makes two sides split equally in the beginning, on mount.
     useEffect(() => {
@@ -75,8 +79,12 @@ export default function Page() {
                 if (typeof transcription === "string" && transcription.startsWith("{")) {
                     transcription = JSON.parse(transcription).transcription;
                 }
-                if (input1_container.current) {
+
+
+                if (input1_container.current && stopBtn.current) {
                     input1_container.current.value = transcription;
+                    stopBtn.current.style.display = "none";
+                    input1_container.current.disabled = false;
                 }
             } else {
                 console.error("Upload failed:", response.statusText);
@@ -124,6 +132,9 @@ export default function Page() {
                         mediaRecorder.start();
                         setRecording(true);
                         console.log("recorder started");
+                        if (switchButton.current) {
+                            switchButton.current.style.display = "none";
+                        }
                     });
             }
         } else {
@@ -133,6 +144,20 @@ export default function Page() {
             }
         }
 };
+
+    const handleSwitchButton = () => {
+        // if textare is enabled
+        if (stopBtn.current && input1_container.current && switchButton.current && icon.current && stopBtn.current.style.display === "block") {
+            stopBtn.current.style.display = "none";
+            input1_container.current.disabled = false;
+            icon.current.src = microphone_small_icon.src;
+        } else if (stopBtn.current && input1_container.current && switchButton.current && icon.current && stopBtn.current.style.display === "none") {
+            stopBtn.current.style.display = "block";
+            input1_container.current.disabled = true;
+            icon.current.src = keyboard_icon.src;
+            input1_container.current.value = "";
+        }
+    }
 
     return (
         <main ref={containerRef} className="flex w-screen h-screen border-4 m-0 p-0 bg-black">
@@ -156,24 +181,30 @@ export default function Page() {
 
                 <div className="relative w-full h-24/100 bg-background">
                     <textarea
+                        disabled
                         id="input1"
                         className="w-full resize-none m-0 p-0 h-full"
                         ref={input1_container}
                         style={{ minHeight: "100px" }}
                     />
                     <button
+                        style={ {display: "block"} }
                         id="record"
+                        ref={stopBtn}
                         className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 transition-colors duration-300 ${
                             recording
                                 ? 'bg-green-500 text-white'
                                 : 'bg-gray-700 text-gray-300 hover:bg-green-500 hover:text-white'
                         }`}
-                        onClick={handleRecord}
+                        // onClick={handleRecord}
                         type="button"
                     >
-                        <img src={microphone_icon.src} className="w-8 h-8" style={{ filter: "invert(1)" }} alt="mic" />
+                        <img src={ microphone_icon.src} className="w-8 h-8" style={{ filter: "invert(1)" }} alt="mic" />
                     </button>
-                    {audioURL && (<audio controls src={audioURL} className="mt-4" />)}
+
+                    <button ref={switchButton} style={ {display: "flex"} } className="absolute rounded-2xl right-0 top-0 h-12 w-12 bg-gray-700 flex items-center justify-center hover:bg-green-500 transition-colors duration-300" onClick={handleSwitchButton}>
+                        <img ref={icon} className="w-6 h-6 m-0 p-0" src={keyboard_icon.src} style={{ filter: "invert(1)" }}></img>
+                    </button>
                 </div>
 
                 <div 
