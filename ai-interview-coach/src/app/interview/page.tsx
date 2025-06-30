@@ -44,7 +44,7 @@ export default function Page() {
                 <div 
                     id="IDE" 
                     className="h-2/4 w-full m-0 p-0 relative">
-                     <MonacoEdtior language="python"/> 
+                    <MonacoEdtior language="python"/> 
                 </div>
 
                 <div 
