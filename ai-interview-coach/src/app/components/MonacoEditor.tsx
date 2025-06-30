@@ -12,7 +12,7 @@ type MonacoEdtiorProps = {
 
 export default function MonacoEdtior( {
     language = "python",
-    options = { backgroundColor: "#262626" },
+    options = { backgroundColor: "#1d1d1d" },
 }: MonacoEdtiorProps) {
 
     const [code, setCode] = useState("");

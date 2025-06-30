@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, use } from "react"
 import dynamic from "next/dynamic";
 import InputField from "../components/InputField";
 import ResizableBar from "../components/resizableBar";
-import { get } from "http";
+import "../../app/globals.css";
 
 const MonacoEdtior = dynamic( () => import("../components/MonacoEditor"), {
     ssr: false,
@@ -46,7 +46,7 @@ export default function Page() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                console.log(data.question);
 
                 setDockerApiResponse(data);
             } else {
@@ -65,16 +65,19 @@ export default function Page() {
     return (
         <main ref={containerRef} className="flex w-screen h-screen border-4 m-0 p-0 bg-black">
 
-            <div 
-                id="leftPane" 
-                style={ {width : leftWidth - 4 + "px" }} 
-                className="bg-background h-screen"
-                ref={leftPane}>
-                {/* working on today */}
+            <div
+                id="leftPane"
+                style={{ width: leftWidth - 4 + "px" }}
+                className="bg-background h-screen overflow-y-auto p-4 text-white"
+                ref={leftPane}
+            >
                 {dockerApiResponse ? (
-                    <h1 className="text-white text-xl p-4">{dockerApiResponse.questionTitle}</h1>
+                    <div
+                        dangerouslySetInnerHTML={{ __html: dockerApiResponse.question }}
+                        className="prose prose-invert max-w-none"
+                    ></div>
                 ) : (
-                    <p className="text-gray-400 p-4">Loading...</p>
+                    <p className="text-gray-400">Loading...</p>
                 )}
             </div>
 
