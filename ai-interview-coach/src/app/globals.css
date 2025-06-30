@@ -6,8 +6,9 @@
   --color-surface: #262626;
   --color-secondary: #A0A0A0;
   --color-accent: #22C55E;
-  --color-border: #333333;   
+  --color-border: #444444;   
   --color-danger: #EF4444; 
+
 }
 
 html, body {
@@ -30,4 +31,11 @@ code {
   border-width: 1px;
   border-color: #3d3d3e;
   border-radius: 8px;
+}
+
+.problem-container p {
+  margin-top: 20px;
+}
+
+.problem-container .example {
 }

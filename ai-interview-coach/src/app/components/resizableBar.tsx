@@ -57,7 +57,11 @@ const ResizeableBar: React.FC<ResizableBarProps> = ( {
         <div 
             id="resizeableBar" 
             onMouseDown={mouseDown} 
-            className="h-screen w-2 bg-black cursor-ew-resize">
+            className="w-2 h-screen cursor-ew-resize flex items-center justify-center">
+                <div
+                    style={{background: "#252525"}} 
+                    className="w-0.5 h-7 rounded-4xl">
+                </div>
         </div>
     )
 }
