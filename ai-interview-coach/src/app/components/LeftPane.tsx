@@ -3,10 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 interface LeftPaneProps {
     leftWidth: number;
     leftPaneRef: React.RefObject<HTMLDivElement | null>;
-}
-
-const LeftPane: React.FC<LeftPaneProps> = ( {leftWidth, leftPaneRef} ) => {
-    const [dockerApiResponse, setDockerApiResponse] = useState<{
+    dockerApiResponse: {
         questionLink: string;
         date: string;
         questionId: string;
@@ -30,7 +27,36 @@ const LeftPane: React.FC<LeftPaneProps> = ( {leftWidth, leftPaneRef} ) => {
         likes: number;
         dislikes: number;
         similarQuestions: string;
-    } | null>(null);
+    } | null;
+    setDockerApiResponse: React.Dispatch<React.SetStateAction<{
+        questionLink: string;
+        date: string;
+        questionId: string;
+        questionFrontendId: string;
+        questionTitle: string;
+        titleSlug: string;
+        difficulty: string;
+        isPaidOnly: boolean;
+        question: string;
+        exampleTestcases: string;
+        topicTags: { name: string; slug: string; translatedName: string | null }[];
+        hints: string[];
+        solution: {
+            id: string;
+            canSeeDetail: boolean;
+            paidOnly: boolean;
+            hasVideoSolution: boolean;
+            paidOnlyVideo: boolean;
+        };
+        companyTagStats: string | null;
+        likes: number;
+        dislikes: number;
+        similarQuestions: string;
+    } | null>>;
+}
+
+const LeftPane: React.FC<LeftPaneProps> = ( {leftWidth, leftPaneRef, dockerApiResponse, setDockerApiResponse} ) => {
+    
 
     const getQuestions = async () => {
         try {

@@ -12,15 +12,17 @@ export async function POST(req: Request) {
         }
 
         console.log("received file:", file);
+        console.log("API Key:", process.env.NEXT_PUBLIC_OPENAI_API_KEY);
 
             const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });        
             const transcription = await openai.audio.transcriptions.create({
                 file: file,
                 model: "gpt-4o-transcribe",
                 response_format: "text",
+                language: "en",
             });
 
-        console.log(transcription);
+        console.log("here is the transcriotion: ",transcription);
         return NextResponse.json({ transcription });
         
     } catch (err) {

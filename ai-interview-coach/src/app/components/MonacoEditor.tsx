@@ -10,6 +10,8 @@ type MonacoEdtiorProps = {
     };
     currentStep: number;
     setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+    code: string;
+    setCode: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function MonacoEdtior( {
@@ -17,9 +19,9 @@ export default function MonacoEdtior( {
     options = { backgroundColor: "#1d1d1d" },
     currentStep,
     setCurrentStep,
+    code,
+    setCode,
 }: MonacoEdtiorProps) {
-
-    const [code, setCode] = useState("");
 
     function handleChange(val: string | undefined) {
         const newCode = val;
