@@ -43,6 +43,8 @@ export default function Page() {
         } | null>(null);
 
     const [code, setCode] = useState("");
+    const [input1Text, setInput1Text] = useState("");
+    const [input2Text, setInput2Text] = useState("");
 
     return (
         <main ref={containerRef} className="flex w-screen h-screen m-0 p-2.5 bg-black box-border">
@@ -76,6 +78,10 @@ export default function Page() {
                             setDockerApiResponse={setDockerApiResponse}
                             code={code}
                             setCode={setCode}
+                            input1Text={input1Text}
+                            setInput1Text={setInput1Text}
+                            input2Text={input2Text}
+                            setInput2Text={setInput2Text}
                         />
                     </>
                 )}
@@ -105,6 +111,10 @@ export default function Page() {
                             setDockerApiResponse={setDockerApiResponse}
                             code={code}
                             setCode={setCode}
+                            input1Text={input1Text}
+                            setInput1Text={setInput1Text}
+                            input2Text={input2Text}
+                            setInput2Text={setInput2Text}
                         />
                     </>
                 )}

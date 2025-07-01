@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState } from "react";
+import React, { forwardRef, use, useRef, useState } from "react";
 import microphone_icon from "../assets/microphone.png";
 import keyboard_icon from "../assets/keyboard.png";
 import microphone_small_icon from "../assets/microphone_small.png"
@@ -59,6 +59,10 @@ interface InputFieldProps {
         } | null>>;
         code: string;
         setCode: React.Dispatch<React.SetStateAction<string>>;
+        input1Text: string;
+        setInput1Text: React.Dispatch<React.SetStateAction<string>>;
+        input2Text: string;
+        setInput2Text: React.Dispatch<React.SetStateAction<string>>;
 }
 
 
@@ -70,6 +74,10 @@ const InputField: React.FC<InputFieldProps> = ({
         setDockerApiResponse,
         code,
         setCode,
+        input1Text,
+        setInput1Text,
+        input2Text,
+        setInput2Text,
     }) => {
         
         // Define refs locally for this component
@@ -78,8 +86,6 @@ const InputField: React.FC<InputFieldProps> = ({
         const iconRef = useRef<HTMLImageElement>(null);
         const stopButtonRef = useRef<HTMLButtonElement>(null);
         const [recording, setRecording] = useState(false);
-        const [input1Text, setInput1Text] = useState("");
-        const [input2Text, setInput2Text] = useState("");
 
         const constraints = {
             audio: true,
@@ -132,6 +138,8 @@ const InputField: React.FC<InputFieldProps> = ({
             }
         }
 
+        const input1Ref = useRef<string>("");
+
         const submitData = async (data: FormData) => {
             try {
                 let response = await fetch("/api/transcribe", {
@@ -142,33 +150,45 @@ const InputField: React.FC<InputFieldProps> = ({
                 if (response.ok) {
                     const text = await response.json();
                     let transcription = text.transcription;
-                    // it finally logs the text, fixed AI mistake
-                    console.log("check check hi:", transcription);
+
                     if (typeof transcription === "string" && transcription.startsWith("{")) {
                         transcription = JSON.parse(transcription).transcription;
                     }
+
+                    if (currentStep === 1) {
+                        input1Ref.current = transcription;
+                        setInput1Text(transcription);
+                        console.log("Updated input1Ref:", input1Ref.current);
+                        setCurrentStep(2);
+
+                    } else {
+                        getFeedback({
+                            question: dockerApiResponse?.question,
+                            code: code,
+                            input1: input1Text,
+                            input2: transcription,
+                        });
+                    }
+
+                    console.log("check check hi:", transcription);
 
                     if (inputContainerRef.current && stopButtonRef.current) {
                         inputContainerRef.current.value = transcription;
                         stopButtonRef.current.style.display = "none";
                         inputContainerRef.current.disabled = false;
                     }
-
-                    if (currentStep === 1) {
-                        setCurrentStep(currentStep + 1);
-                        setInput1Text(transcription);
                     } else {
-                        setInput2Text(transcription);
-                        getFeedback();
+                        console.error("Upload failed:", response.statusText);
                     }
-                } else {
-                    console.error("Upload failed:", response.statusText);
+                } catch (err) {
+                    console.log("An error occurred:", err);
                 }
-            } catch (err) {
-                console.log("An error occurred:", err);
-            }
+            };
+
+        const getFeedback = ({ question, code, input1, input2 }: { question?: string; code?: string; input1?: string; input2?: string }) => {
+            console.log("question:", question, "input1:", input1, "code:", code, "input2:", input2);
         };
-        
+    
 
         const handleSwitchButton = () => {
             if (
@@ -194,14 +214,6 @@ const InputField: React.FC<InputFieldProps> = ({
                 inputContainerRef.current.value = "";
             }
         };
-
-        const getFeedback = () => {
-            let question = dockerApiResponse?.question;
-            let input1 = input1Text;
-            let codeInput = code; 
-            let input2 = input2Text;
-        }
-
 
 
         return (
@@ -264,7 +276,6 @@ const InputField: React.FC<InputFieldProps> = ({
                     <Link
                         className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150"
                         href="/results"
-                        
                     >
                         Submit
                     </Link>
