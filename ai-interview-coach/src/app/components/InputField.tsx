@@ -120,14 +120,12 @@ const InputField: React.FC<InputFieldProps> = ({
                                 data.append("audioFile", blob, "recording.webm");
                                 submitData(data);
     
-                                console.log("recorder stopped");
                                 setRecording(false);
                             };
     
                             chunks.current = [];
                             mediaRecorder.start();
                             setRecording(true);
-                            console.log("recorder started");
                         });
                 }
             } else {
@@ -158,8 +156,6 @@ const InputField: React.FC<InputFieldProps> = ({
                     if (currentStep === 1) {
                         input1Ref.current = transcription;
                         setInput1Text(transcription);
-                        console.log("Updated input1Ref:", input1Ref.current);
-                        setCurrentStep(2);
 
                     } else {
                         getFeedback({
@@ -169,8 +165,6 @@ const InputField: React.FC<InputFieldProps> = ({
                             input2: transcription,
                         });
                     }
-
-                    console.log("check check hi:", transcription);
 
                     if (inputContainerRef.current && stopButtonRef.current) {
                         inputContainerRef.current.value = transcription;
@@ -185,8 +179,25 @@ const InputField: React.FC<InputFieldProps> = ({
                 }
             };
 
-        const getFeedback = ({ question, code, input1, input2 }: { question?: string; code?: string; input1?: string; input2?: string }) => {
-            console.log("question:", question, "input1:", input1, "code:", code, "input2:", input2);
+        const getFeedback = async ({ question, code, input1, input2 }: { question?: string; code?: string; input1?: string; input2?: string }) => {
+
+            let data = {
+                question: question,
+                code: code,
+                input1: input1,
+                input2: input2,
+            };
+            
+            let response = await fetch("/api/feedback", {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+
+                method: "POST",
+                body: JSON.stringify(data),
+            });
+
+            console.log("here is the end resly", await response.json())
         };
     
 
@@ -266,7 +277,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
                 { currentStep === 1 && (
                     <button
-                        className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150"
+                        className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150" onClick={() => {setCurrentStep(2)}}
                     >
                         Proceed
                     </button>

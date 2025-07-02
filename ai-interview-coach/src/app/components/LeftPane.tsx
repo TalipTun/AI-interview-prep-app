@@ -64,7 +64,6 @@ const LeftPane: React.FC<LeftPaneProps> = ( {leftWidth, leftPaneRef, dockerApiRe
 
             if (response.ok) {
                 const data = await response.json();
-                console.log(data.question);
 
                 setDockerApiResponse(data);
             } else {

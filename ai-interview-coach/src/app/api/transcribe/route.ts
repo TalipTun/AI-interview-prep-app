@@ -11,9 +11,6 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
         }
 
-        console.log("received file:", file);
-        console.log("API Key:", process.env.NEXT_PUBLIC_OPENAI_API_KEY);
-
             const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });        
             const transcription = await openai.audio.transcriptions.create({
                 file: file,
