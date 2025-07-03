@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "@tailwindcss/typography": "^0.5.16",
     "monaco-editor": "^0.52.2",
     "next": "15.3.3",
     "openai": "^5.8.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

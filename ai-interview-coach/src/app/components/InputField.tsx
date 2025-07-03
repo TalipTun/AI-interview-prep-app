@@ -1,7 +1,5 @@
 import React, { forwardRef, use, useRef, useState } from "react";
 import microphone_icon from "../assets/microphone.png";
-import keyboard_icon from "../assets/keyboard.png";
-import microphone_small_icon from "../assets/microphone_small.png"
 import Link from 'next/link'
 
 interface InputFieldProps {
@@ -166,26 +164,66 @@ const InputField: React.FC<InputFieldProps> = ({
                         });
                     }
 
-                    if (inputContainerRef.current && stopButtonRef.current) {
-                        inputContainerRef.current.value = transcription;
-                        stopButtonRef.current.style.display = "none";
-                        inputContainerRef.current.disabled = false;
-                    }
-                    } else {
-                        console.error("Upload failed:", response.statusText);
-                    }
-                } catch (err) {
-                    console.log("An error occurred:", err);
+                } else {
+                    console.error("Upload failed:", response.statusText);
                 }
+            } catch (err) {
+                console.log("An error occurred:", err);
+            }
             };
 
         const getFeedback = async ({ question, code, input1, input2 }: { question?: string; code?: string; input1?: string; input2?: string }) => {
 
             let data = {
                 question: question,
-                code: code,
-                input1: input1,
-                input2: input2,
+                code: `
+                function getKthCharacter(k: number): string {
+            // The problem states k is 1-indexed, so we convert it to 0-indexed for calculations.
+            let currentK = k - 1; 
+
+            // The length of the string after 'm' operations is 2^m.
+            // We need to find which 'block' or iteration 'currentK' falls into.
+            // This recursive function determines the character.
+            // charOffset tracks how many times the character has been 'shifted' (a->b, b->c, etc.)
+            // based on which half of the string it falls into at each step.
+            
+            function findCharRecursive(index: number, charOffset: number): number {
+                // Base case: If the index is 0, it means we've reached the first character of a block.
+                // The character is 'a' plus the accumulated charOffset.
+                if (index === 0) {
+                    return charOffset; // Returns the offset from 'a'
+                }
+
+                // Find the largest power of 2 that is less than or equal to the current index.
+                // This represents the length of the string in the previous full iteration.
+                let powerOfTwo = 1;
+                while (powerOfTwo * 2 <= index) {
+                    powerOfTwo *= 2;
+                }
+
+                // If the index is in the first half of the current block,
+                // it belongs to the previous iteration's string. The character offset doesn't change.
+                if (index < powerOfTwo) {
+                    return findCharRecursive(index - powerOfTwo / 2, charOffset);
+                } 
+                // If the index is in the second half of the current block,
+                // it belongs to the newly appended and transformed part of the string.
+                // The character offset increases by 1.
+                else {
+                    return findCharRecursive(index - powerOfTwo, charOffset + 1);
+                }
+            }
+
+            // Calculate the final offset from 'a'
+            const finalOffset = findCharRecursive(currentK, 0);
+
+            // Convert the offset back to a character, handling the 'z' to 'a' wrap-around
+            const charCode = 'a'.charCodeAt(0) + (finalOffset % 26);
+            return String.fromCharCode(charCode);
+        }
+                `,
+                input1: "Okay, so I think the problem is asking us to figure out a specific character in a very long string. Alice starts with 'a'. Then, Bob keeps telling her to take the entire current word, change every character in it to the next letter (like 'a' to 'b', 'b' to 'c'), and then append this newly transformed word to the end of the original word. So, if word is 'a', the next character is 'b'. The new string is 'b'. This 'b' is appended to 'a', so word becomes 'ab'. Then for 'ab', the next characters are 'bc'. So 'bc' is appended to 'ab', making it 'abbc'. I think the string length just doubles each time, and the character at position k is determined by how many operations have happened, so it's probably just 'a' plus k or k-1 offset, wrapping around from 'z'. The 'z' wrapping to 'a' is a bit tricky, but I think the core idea is just finding the character based on its index.",
+                input2: "My solution calculates the k-th character by first converting k to a 0-indexed value. Then, I use a recursive helper function findCharRecursive to determine the character. This function basically figures out which part of the string k falls into. If k is in the first half, it means the character hasn't changed. If it's in the second half, it means the character has shifted by one. This process continues until k becomes 0. The time complexity of this approach is O(k) because in the worst case, the while loop inside findCharRecursive iterates proportional to k to find the powerOfTwo. The space complexity is O(1) because I'm not storing any large data structures. The findCharRecursive function also handles the 'z' to 'a' wrap-around automatically because it uses character codes, which is a neat trick. The powerOfTwo calculation helps me figure out the exact position. The overall string length grows very quickly, but my algorithm doesn't actually build the string, which is efficient.",
             };
             
             let response = await fetch("/api/feedback", {
@@ -197,35 +235,15 @@ const InputField: React.FC<InputFieldProps> = ({
                 body: JSON.stringify(data),
             });
 
-            console.log("here is the end resly", await response.json())
-        };
-    
+            if (response.ok) {
+                const result = await response.json();
+                console.log("here is the end resly", result);
 
-        const handleSwitchButton = () => {
-            if (
-                stopButtonRef.current &&
-                inputContainerRef.current &&
-                switchButtonRef.current &&
-                iconRef.current &&
-                stopButtonRef.current.style.display === "block"
-            ) {
-                stopButtonRef.current.style.display = "none";
-                inputContainerRef.current.disabled = false;
-                iconRef.current.src = microphone_small_icon.src;
-            } else if (
-                stopButtonRef.current &&
-                inputContainerRef.current &&
-                switchButtonRef.current &&
-                iconRef.current &&
-                stopButtonRef.current.style.display === "none"
-            ) {
-                stopButtonRef.current.style.display = "block";
-                inputContainerRef.current.disabled = true;
-                iconRef.current.src = keyboard_icon.src;
-                inputContainerRef.current.value = "";
+                localStorage.setItem("interviewFeedback", JSON.stringify(result.feedback));
+            } else {
+                console.log("feedback request failed");
             }
         };
-
 
         return (
             <div className="relative w-full h-full bg-background rounded-xl">
@@ -254,22 +272,6 @@ const InputField: React.FC<InputFieldProps> = ({
                         className="w-8 h-8"
                         style={{ filter: "invert(1)" }}
                         alt="mic"
-                    />
-                </button>
-
-                {/* Switch Button */}
-                <button
-                    ref={switchButtonRef}
-                    style={{ display: "flex", background: "#868686" }}
-                    className="absolute rounded-xl right-0 top-0 h-12 w-12 flex items-center justify-center hover:bg-green-500 transition-colors duration-300"
-                    onClick={handleSwitchButton}
-                >
-                    <img
-                        ref={iconRef}
-                        className="w-6 h-6 m-0 p-0"
-                        src={keyboard_icon.src}
-                        style={{ filter: "invert(1)" }}
-                        alt="keyboard"
                     />
                 </button>
 

@@ -38,5 +38,128 @@ code {
   margin-top: 20px;
 }
 
-.problem-container .example {
+.markdown-section{
+  background-color: #292929;
+  
+}
+
+.markdown-content p,
+.markdown-content li,
+.markdown-content span {
+  color: #E0E0E0; /* --color-primary */
+  line-height: 1.6;
+  margin-bottom: 0.5rem; /* Add some space between paragraphs/list items */
+}
+
+/* Headings */
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  color: #E0E0E0; /* --color-primary */
+  font-weight: bold;
+  margin-top: 0; /* Space above headings */
+  margin-bottom: 0.75rem; /* Space below headings */
+}
+
+.markdown-content h1 {
+  color: #E0E0E0; /* --color-primary */
+  font-weight: bold;
+  margin-top: 1.5rem; /* Space above headings */
+  margin-bottom: 0.75rem; /* Space below headings */
+}
+
+.markdown-content h1 {
+  font-size: 2.25rem; /* text-4xl equivalent */
+}
+
+.markdown-content h2 {
+  font-size: 1.875rem; /* text-3xl equivalent */
+  color: #F0F0F0; /* Slightly brighter for section titles within feedback */
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem; /* text-2xl equivalent */
+}
+
+/* Strong/Bold text */
+.markdown-content strong {
+  color: #E0E0E0; /* --color-primary */
+  font-weight: bolder;
+}
+
+/* Links (if your AI generates any) */
+.markdown-content a {
+  color: #22C55E; /* --color-accent */
+  text-decoration: underline;
+}
+
+/* Lists (Unordered and Ordered) */
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem; /* Indent lists */
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem; /* Small space between list items */
+}
+
+/* Inline code (e.g., `word`) */
+.markdown-content code {
+  background-color: #383838; /* Slightly darker than background */
+  color: #22C55E; /* --color-accent for inline code */
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875em; /* Slightly smaller than parent text */
+}
+
+/* Code Blocks (e.g., ```typescript ... ```) */
+.markdown-content pre {
+  background-color: #1A1A1A; /* Even darker background for code blocks */
+  color: #E0E0E0; /* Primary text color for code */
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto; /* Allow horizontal scrolling for long lines */
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content pre code {
+    /* Reset inline code styles for block code */
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+}
+
+/* Blockquotes (if your AI generates them) */
+.markdown-content blockquote {
+  border-left: 4px solid #22C55E; /* Accent color border */
+  color: #A0A0A0; /* --color-secondary for blockquote text */
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: italic;
+}
+
+/* Horizontal Rules */
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #4A4A4A; /* A subtle dark gray line */
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }

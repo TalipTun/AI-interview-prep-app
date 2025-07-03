@@ -82,17 +82,17 @@ export async function POST(req: Request) {
         openai.chat.completions.create({
           model: "gpt-4o-mini", // Use gpt-4o-mini for testing, cheaper/faster. Switch to gpt-4o or gpt-4 for better quality.
           messages: [{ role: "user", content: problemUnderstandingPrompt }],
-          max_tokens: 500, // Limit response length to avoid excessive tokens
+          max_tokens: 700, // Limit response length to avoid excessive tokens
         }),
         openai.chat.completions.create({
           model: "gpt-4o-mini",
           messages: [{ role: "user", content: solutionExplanationPrompt }],
-          max_tokens: 500,
+          max_tokens: 700,
         }),
         openai.chat.completions.create({
           model: "gpt-4o-mini",
           messages: [{ role: "user", content: codeCritiquePrompt }],
-          max_tokens: 500,
+          max_tokens: 700,
         }),
       ]);
   
