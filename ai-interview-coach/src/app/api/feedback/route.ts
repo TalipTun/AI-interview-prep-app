@@ -103,8 +103,8 @@ export async function POST(req: Request) {
         codeCritique: codeCritiqueResponse.choices[0]?.message?.content || "No feedback generated.",
       };
   
-      return NextResponse.json({ feedback: consolidatedFeedback }, { status: 200 });
-       
+      return NextResponse.json({ question, code, input1, input2, feedback: consolidatedFeedback }, { status: 200 });       
+      
     } catch (err) {
         console.log("an error occured", err);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

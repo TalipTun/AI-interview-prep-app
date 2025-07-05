@@ -91,31 +91,37 @@ export default function Page() {
                         <div 
                             id="IDE" 
                             className="h-full w-full m-0 p-0 relative">
-                            <MonacoEdtior 
-                                language="python"
-                                currentStep={currentStep}
-                                setCurrentStep={setCurrentStep}
-                                code={code}
-                                setCode={setCode}
-                            /> 
-                        </div>
-                    </>
-                )}
+                                <div className="w-full"
+                                    style={{ height: "calc(50% - 4px)" }}>
+                                    <MonacoEdtior 
+                                        language="python"
+                                        currentStep={currentStep}
+                                        setCurrentStep={setCurrentStep}
+                                        code={code}
+                                        setCode={setCode}
+                                    /> 
+                                </div>
 
-                {currentStep === 3 && (
-                    <>
-                        <InputField 
-                            currentStep={currentStep}
-                            setCurrentStep={setCurrentStep}
-                            dockerApiResponse={dockerApiResponse}
-                            setDockerApiResponse={setDockerApiResponse}
-                            code={code}
-                            setCode={setCode}
-                            input1Text={input1Text}
-                            setInput1Text={setInput1Text}
-                            input2Text={input2Text}
-                            setInput2Text={setInput2Text}
-                        />
+                                <div id="dividerBar" className="h-2 w-full bg-black">
+
+                                </div>
+
+                                <div className="w-full"
+                                    style={{ height: "calc(50% - 4px)" }}>
+                                    <InputField
+                                    currentStep={currentStep}
+                                    setCurrentStep={setCurrentStep}
+                                    dockerApiResponse={dockerApiResponse}
+                                    setDockerApiResponse={setDockerApiResponse}
+                                    code={code}
+                                    setCode={setCode}
+                                    input1Text={input1Text}
+                                    setInput1Text={setInput1Text}
+                                    input2Text={input2Text}
+                                    setInput2Text={setInput2Text}
+                                    />
+                                </div>
+                        </div>
                     </>
                 )}
             </div>

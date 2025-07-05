@@ -176,54 +176,9 @@ const InputField: React.FC<InputFieldProps> = ({
 
             let data = {
                 question: question,
-                code: `
-                function getKthCharacter(k: number): string {
-            // The problem states k is 1-indexed, so we convert it to 0-indexed for calculations.
-            let currentK = k - 1; 
-
-            // The length of the string after 'm' operations is 2^m.
-            // We need to find which 'block' or iteration 'currentK' falls into.
-            // This recursive function determines the character.
-            // charOffset tracks how many times the character has been 'shifted' (a->b, b->c, etc.)
-            // based on which half of the string it falls into at each step.
-            
-            function findCharRecursive(index: number, charOffset: number): number {
-                // Base case: If the index is 0, it means we've reached the first character of a block.
-                // The character is 'a' plus the accumulated charOffset.
-                if (index === 0) {
-                    return charOffset; // Returns the offset from 'a'
-                }
-
-                // Find the largest power of 2 that is less than or equal to the current index.
-                // This represents the length of the string in the previous full iteration.
-                let powerOfTwo = 1;
-                while (powerOfTwo * 2 <= index) {
-                    powerOfTwo *= 2;
-                }
-
-                // If the index is in the first half of the current block,
-                // it belongs to the previous iteration's string. The character offset doesn't change.
-                if (index < powerOfTwo) {
-                    return findCharRecursive(index - powerOfTwo / 2, charOffset);
-                } 
-                // If the index is in the second half of the current block,
-                // it belongs to the newly appended and transformed part of the string.
-                // The character offset increases by 1.
-                else {
-                    return findCharRecursive(index - powerOfTwo, charOffset + 1);
-                }
-            }
-
-            // Calculate the final offset from 'a'
-            const finalOffset = findCharRecursive(currentK, 0);
-
-            // Convert the offset back to a character, handling the 'z' to 'a' wrap-around
-            const charCode = 'a'.charCodeAt(0) + (finalOffset % 26);
-            return String.fromCharCode(charCode);
-        }
-                `,
-                input1: "Okay, so I think the problem is asking us to figure out a specific character in a very long string. Alice starts with 'a'. Then, Bob keeps telling her to take the entire current word, change every character in it to the next letter (like 'a' to 'b', 'b' to 'c'), and then append this newly transformed word to the end of the original word. So, if word is 'a', the next character is 'b'. The new string is 'b'. This 'b' is appended to 'a', so word becomes 'ab'. Then for 'ab', the next characters are 'bc'. So 'bc' is appended to 'ab', making it 'abbc'. I think the string length just doubles each time, and the character at position k is determined by how many operations have happened, so it's probably just 'a' plus k or k-1 offset, wrapping around from 'z'. The 'z' wrapping to 'a' is a bit tricky, but I think the core idea is just finding the character based on its index.",
-                input2: "My solution calculates the k-th character by first converting k to a 0-indexed value. Then, I use a recursive helper function findCharRecursive to determine the character. This function basically figures out which part of the string k falls into. If k is in the first half, it means the character hasn't changed. If it's in the second half, it means the character has shifted by one. This process continues until k becomes 0. The time complexity of this approach is O(k) because in the worst case, the while loop inside findCharRecursive iterates proportional to k to find the powerOfTwo. The space complexity is O(1) because I'm not storing any large data structures. The findCharRecursive function also handles the 'z' to 'a' wrap-around automatically because it uses character codes, which is a neat trick. The powerOfTwo calculation helps me figure out the exact position. The overall string length grows very quickly, but my algorithm doesn't actually build the string, which is efficient.",
+                code: code,
+                input1: input1,
+                input2: input2,
             };
             
             let response = await fetch("/api/feedback", {
@@ -239,7 +194,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 const result = await response.json();
                 console.log("here is the end resly", result);
 
-                localStorage.setItem("interviewFeedback", JSON.stringify(result.feedback));
+                localStorage.setItem("interviewSessionData", JSON.stringify(result));
             } else {
                 console.log("feedback request failed");
             }
@@ -254,27 +209,33 @@ const InputField: React.FC<InputFieldProps> = ({
                     ref={inputContainerRef}
                     style={{ minHeight: "100px" }}
                 />
-
+                
                 {/* Record Button */}
-                <button
-                    style={{ display: "block" }}
-                    ref={stopButtonRef}
-                    className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full p-4 transition-colors duration-300 ${
-                        recording
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-700 text-gray-300 hover:bg-green-500 hover:text-white"
-                    }`}
-                    type="button"
-                    onClick={handleRecord}
-                >
-                    <img
-                        src={microphone_icon.src}
-                        className="w-8 h-8"
-                        style={{ filter: "invert(1)" }}
-                        alt="mic"
-                    />
-                </button>
-
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full">
+                    { currentStep === 1 && (
+                        <p className="text-white text-4xl mb-4 w-full">Explain Your Understanding of The Problem</p>
+                    )}
+                    { currentStep === 2 && (
+                        <p className="text-white text-4xl mb-4 w-full">Explain Your Code</p>
+                    )}
+                    <button
+                        ref={stopButtonRef}
+                        className={`rounded-full p-4 transition-colors duration-300 ${
+                            recording
+                                ? "bg-green-500 text-white"
+                                : "bg-gray-700 text-gray-300 hover:bg-green-500 hover:text-white"
+                        }`}
+                        type="button"
+                        onClick={handleRecord}
+                    >
+                        <img
+                            src={microphone_icon.src}
+                            className="w-8 h-8"
+                            style={{ filter: "invert(1)" }}
+                            alt="mic"
+                        />
+                    </button>
+                </div>
                 {/* Proceed or Submit Button */}
 
                 { currentStep === 1 && (
@@ -285,7 +246,7 @@ const InputField: React.FC<InputFieldProps> = ({
                     </button>
                 )}
 
-                { currentStep === 3 && (
+                { currentStep === 2 && (
                     <Link
                         className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150"
                         href="/results"

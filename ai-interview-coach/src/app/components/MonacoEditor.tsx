@@ -29,9 +29,9 @@ export default function MonacoEdtior( {
     }
 
     return (
-        <>
+        <div className="h-full w-full">
             <Editor
-                className="py-6 bg-background relative"
+                className="py-6 bg-background relative rounded-xl h-full"
                 value={code}
                 language={language}
                 theme="my-dark"
@@ -51,12 +51,6 @@ export default function MonacoEdtior( {
                 }}
                 onChange={handleChange}
             />
-            
-            <button 
-                className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150" onClick={() => setCurrentStep(currentStep + 1)}
-            >
-                Proceed
-            </button>
-        </>
+        </div>
     )
 }
