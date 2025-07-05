@@ -45,10 +45,11 @@ export default function Page() {
     const [code, setCode] = useState("");
     const [input1Text, setInput1Text] = useState("");
     const [input2Text, setInput2Text] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    
 
     return (
-        <main ref={containerRef} className="flex w-screen h-screen m-0 p-2.5 bg-black box-border">
-
+        <main ref={containerRef} className="relative flex w-screen h-screen m-0 p-2.5 bg-black box-border">
             <LeftPane
                 leftWidth={leftWidth}
                 leftPaneRef={leftPane}
@@ -82,6 +83,8 @@ export default function Page() {
                             setInput1Text={setInput1Text}
                             input2Text={input2Text}
                             setInput2Text={setInput2Text}
+                            isLoading={isLoading}
+                            setIsLoading={setIsLoading}
                         />
                     </>
                 )}
@@ -119,12 +122,38 @@ export default function Page() {
                                     setInput1Text={setInput1Text}
                                     input2Text={input2Text}
                                     setInput2Text={setInput2Text}
+                                    isLoading={isLoading}
+                                    setIsLoading={setIsLoading}
                                     />
                                 </div>
                         </div>
                     </>
                 )}
             </div>
+
+            {/* isLoading && */ (
+            <div
+                id="loadAction"
+                className="
+                    fixed inset-0       /* Covers entire viewport */
+                    bg-black/70         /* Semi-transparent dark background */
+                    z-[999]             /* High z-index to be on top of everything */
+                    flex items-center justify-center /* Centers its content (the text) */
+                    text-3xl text-accent /* Styles for the text */
+                "
+            >
+                <div className="
+                    p-8 rounded-lg      /* Padding and rounded corners for the box around text */
+                    bg-[#292929]        /* Your panel background color */
+                    border-2 border-accent /* Your accent border */
+                    text-white          /* Text color inside the box */
+                    flex items-center justify-center /* To center text if it wraps */
+                    shadow-lg           /* Optional: Add a subtle shadow */
+                ">
+                    Generating Feedback...
+                </div>
+            </div>
+        )}
         </main>
     )
 }

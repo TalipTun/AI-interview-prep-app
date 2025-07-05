@@ -1,6 +1,7 @@
 import React, { forwardRef, use, useRef, useState } from "react";
 import microphone_icon from "../assets/microphone.png";
 import Link from 'next/link'
+import { useRouter } from "next/navigation";
 
 interface InputFieldProps {
     currentStep: number;
@@ -61,6 +62,8 @@ interface InputFieldProps {
         setInput1Text: React.Dispatch<React.SetStateAction<string>>;
         input2Text: string;
         setInput2Text: React.Dispatch<React.SetStateAction<string>>;
+        isLoading: boolean;
+        setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
@@ -76,6 +79,8 @@ const InputField: React.FC<InputFieldProps> = ({
         setInput1Text,
         input2Text,
         setInput2Text,
+        isLoading,
+        setIsLoading,
     }) => {
         
         // Define refs locally for this component
@@ -93,6 +98,7 @@ const InputField: React.FC<InputFieldProps> = ({
         const mediaRecorderRef = useRef<MediaRecorder | null>(null);
         const chunks = useRef<BlobPart[]>([]);
         const [audioURL, setAudioURL] = useState<string | null>(null);
+        const router = useRouter();
 
         const handleRecord = () => {
             if (!recording) {
@@ -156,12 +162,7 @@ const InputField: React.FC<InputFieldProps> = ({
                         setInput1Text(transcription);
 
                     } else {
-                        getFeedback({
-                            question: dockerApiResponse?.question,
-                            code: code,
-                            input1: input1Text,
-                            input2: transcription,
-                        });
+                        setInput2Text(transcription);
                     }
 
                 } else {
@@ -195,10 +196,26 @@ const InputField: React.FC<InputFieldProps> = ({
                 console.log("here is the end resly", result);
 
                 localStorage.setItem("interviewSessionData", JSON.stringify(result));
+                setIsLoading(false);
             } else {
                 console.log("feedback request failed");
+                setIsLoading(false);
             }
         };
+
+        const handleSubmit = async () => {
+            setIsLoading(true);
+
+            await getFeedback({
+                question: dockerApiResponse?.question,
+                code: code,
+                input1: input1Text,
+                input2: input2Text,
+            });
+
+            setIsLoading(false);
+            router.push('/results');
+        }
 
         return (
             <div className="relative w-full h-full bg-background rounded-xl">
@@ -247,12 +264,12 @@ const InputField: React.FC<InputFieldProps> = ({
                 )}
 
                 { currentStep === 2 && (
-                    <Link
+                    <button
                         className="absolute rounded-2xl right-0 bottom-0 h-12 w-24 bg-accent flex items-center justify-center hover:bg-blue-400 transition-colors duration-150"
-                        href="/results"
+                        onClick={handleSubmit}
                     >
                         Submit
-                    </Link>
+                    </button>
                 )}
             </div>
         );

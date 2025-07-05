@@ -9,12 +9,14 @@ export default function ResultsPage() {
     useEffect(() => {
         const interviewSessionData = localStorage.getItem("interviewSessionData");
         if (interviewSessionData) {
+            console.log("here is session data:", interviewSessionData)
+            console.log("here is session data / parsed:", JSON.parse(interviewSessionData))
             setFeedback(JSON.parse(interviewSessionData));
             localStorage.removeItem("interviewSessionData");
         }
 
-        console.log("here is your feedback: ",feedback)
-    },[feedback])
+        console.log("here is your end result: ", feedback)
+    },[])
 
     if (!feedback) {
         return <div className="text-center text-gray-500">Loading feedback or no feedback found...</div>;
@@ -52,19 +54,19 @@ export default function ResultsPage() {
 
             <section className="markdown-section mb-8 p-6 rounded-lg">
                 <div className="markdown-content">
-                    <Markdown>{feedback.problemUnderstanding}</Markdown>
+                    <Markdown>{feedback.feedback.problemUnderstanding}</Markdown>
                 </div>
             </section>
 
             <section className="markdown-section mb-8 p-6 rounded-lg">
                 <div className="markdown-content">
-                    <Markdown>{feedback.solutionExplanation}</Markdown>
+                    <Markdown>{feedback.feedback.solutionExplanation}</Markdown>
                 </div>
             </section>
 
             <section className="markdown-section mb-8 p-6 rounded-lg">
                 <div className="markdown-content">
-                    <Markdown>{feedback.codeCritique}</Markdown>
+                    <Markdown>{feedback.feedback.codeCritique}</Markdown>
                 </div>
             </section>
         </div>

@@ -6,13 +6,8 @@ const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 export async function POST(req: Request) {
     try {
        const {question, code, input1, input2 } = await req.json();
-        
-       if (!question || !code || !input1 || !input2) {
-        return NextResponse.json(
-          { error: "Missing required input data" },
-          { status: 400 }
-        );
-      }
+
+       console.log({ question, code, input1, input2 });
 
       const problemUnderstandingPrompt = `
       You are an expert technical interviewer and coach.
@@ -102,6 +97,8 @@ export async function POST(req: Request) {
         solutionExplanation: solutionExplanationResponse.choices[0]?.message?.content || "No feedback generated.",
         codeCritique: codeCritiqueResponse.choices[0]?.message?.content || "No feedback generated.",
       };
+
+      console.log("before sending it all:", { question, code, input1, input2, feedback: consolidatedFeedback })
   
       return NextResponse.json({ question, code, input1, input2, feedback: consolidatedFeedback }, { status: 200 });       
       
